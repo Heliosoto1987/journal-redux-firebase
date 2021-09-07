@@ -1,36 +1,47 @@
 //vendor
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 //router
 import { Link } from 'react-router-dom'
-import { starLoginEmailPassoword, startGoogleLogin } from '../../actions/auth';
+import { startLoginEmailPassword, startGoogleLogin } from '../../actions/auth';
 //custom hooks
 import { useForm } from '../../hooks/useForm';
 
 export const LoginScreen = () => {
+    
     const dispatch = useDispatch()
-
+    const { loading } = useSelector(s => s.ui)
+    
     const [ formValues, handleInputChange ] = useForm({
         email: 'heliosoto17@gmail.com',
-        password: 123456,
+        password: '',
     });
 
     const { email, password } = formValues;
 
     const handleLogin = (e) => {
         e.preventDefault();
-        dispatch( starLoginEmailPassoword( email, password ) )
+        dispatch( startLoginEmailPassword( email, password ) )
+      
+
+    
     }
 
     const handleGoogleLogin = () => {
-        dispatch(startGoogleLogin())
+        dispatch( startGoogleLogin() );
     }
 
     return (
         <>
-            <h3 className="auth__title">Login</h3>
-
-            <form onClick={ handleLogin }>
+        
+            <h3 
+            className="auth__title"
+          
+            >
+                Login
+            </h3>
+        
+            <form onSubmit={ handleLogin }>
 
                 <input
                     type="text"
@@ -52,14 +63,17 @@ export const LoginScreen = () => {
                     onChange={ handleInputChange }
                 />
 
-
+                {
                 <button
                 className="btn btn-primary btn-block"
                 type="submit"
+                disabled={ loading }
+                
                 >
                     Login
                 </button>
-
+                }
+                
                 <div className="auth__social-networks">
                     <p>Login with social networks</p>
                         <div className="google-btn"

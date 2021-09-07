@@ -6,14 +6,24 @@ import { Link } from 'react-router-dom'
 import { useForm } from '../../hooks/useForm'
 //library
 import validator from 'validator'
+//redux
+import { useDispatch, useSelector } from 'react-redux'
+//actions
+import { removeError, setError } from '../../actions/ui'
+//funtion Auth
+import { startRegisterWithEmailPasswordName } from '../../actions/auth'
 
 export const RegisterScreen = () => {
+
+    const dispatch = useDispatch()
+    const { msgError } = useSelector(state => state.ui)
+   
 
     const [formValues, handleInputChange ] = useForm({
         name: '',
         email: '',
-        password: typeof(Number),
-        password2: typeof(Number),
+        password: '',
+        password2: '',
     })
     
     const { name, email, password, password2 } = formValues
@@ -21,23 +31,24 @@ export const RegisterScreen = () => {
     const handleRegister = (e) => {
         e.preventDefault()
         if( isFormValid() ) {
-
+            dispatch( startRegisterWithEmailPasswordName(email, password, name) )
         } 
     }
 
     const isFormValid = ( ) => {
 
         if( name.trim().length === 0 ){
-            console.log('Name is requerid')
+           dispatch(setError('name is not valid'))
             return false
         } else if ( !validator.isEmail( email ) ){
-            console.log('email is not valid')
+            dispatch( setError('email is not valid'))
             return false
         } else if (password !== password2 || password2.length < 5) {
-            console.log('password is invalid')
+           dispatch(setError('password is invalid'))
             return false
         }
 
+        dispatch( removeError());
         return true
     }
 
@@ -49,10 +60,13 @@ export const RegisterScreen = () => {
         <h3 className="auth__title">Register</h3>
 
         <form onSubmit={handleRegister}>
-
-            <div className="auth__alert-error">
-                Hola Mundo
-            </div>
+            
+            {
+            msgError && 
+                <div className="auth__alert-error">
+                    {msgError} 
+                </div>
+            }
 
             <input
                 type="text"

@@ -1,10 +1,17 @@
 import { types } from "../types/types";
 
 export const setError = (err) => ({
-  types: types.uiSetError,
+  type: types.uiSetError,
   payload: err,
 });
 
 export const removeError = () => ({
-  types: types.uiRemoveError,
+  type: types.uiRemoveError,
+});
+
+export const startLoading = () => ({
+  type: types.uiStartLoading,
+});
+export const finishLoading = () => ({
+  type: types.uiFinishLoading,
 });
